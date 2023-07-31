@@ -1,10 +1,11 @@
 // src/setupTests.js
-import { server } from "./__mocks__/server";
+import { server } from "./handlers"; // Use a relative path here
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
 
-// Reset any runtime request handlers we may add during the tests.
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
 afterEach(() => server.resetHandlers());
 
 // Clean up after the tests are finished.

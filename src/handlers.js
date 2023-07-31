@@ -1,4 +1,5 @@
 import { rest } from "msw";
+import { setupServer } from 'msw/node';
 import { data } from "./data";
 
 let items = [...data];
@@ -9,7 +10,7 @@ export function resetData() {
   id = items[items.length - 1].id;
 }
 
-export const handlers = [
+const handlers = [
   rest.get("http://localhost:4000/items", (req, res, ctx) => {
     return res(ctx.json(items));
   }),
@@ -37,3 +38,5 @@ export const handlers = [
     return res(ctx.json(items[itemIndex]));
   }),
 ];
+
+export const server = setupServer(...handlers);

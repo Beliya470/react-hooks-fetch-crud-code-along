@@ -9,24 +9,50 @@ function ShoppingList() {
 
   // Function to fetch items
   useEffect(() => {
-    fetch("/api/items")
+    fetch("http://localhost:5000/api/items")
       .then((res) => res.json())
       .then(setItems);
   }, []);
 
   // Pass this function to ItemForm to handle new item creation
   function handleAddItem(item) {
-    setItems((prevItems) => [...prevItems, item]);
+    fetch("http://localhost:5000/api/items", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    })
+      .then((res) => res.json())
+      .then((newItem) => {
+        setItems((prevItems) => [...prevItems, newItem]);
+      });
   }
 
   function handleUpdateItem(updatedItem) {
-    setItems((prevItems) =>
-      prevItems.map((item) => (item.id === updatedItem.id ? updatedItem : item))
-    );
+    fetch(`http://localhost:5000/api/items/${updatedItem.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedItem),
+    })
+      .then((res) => res.json())
+      .then((updatedItem) => {
+        setItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === updatedItem.id ? updatedItem : item
+          )
+        );
+      });
   }
 
   function handleDeleteItem(id) {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    fetch(`http://localhost:5000/api/items/${id}`, {
+      method: "DELETE",
+    }).then(() => {
+      setItems((prevItems) => prevItems.filter((item) => item.id !== id));
+    });
   }
 
   function handleCategoryChange(category) {
@@ -48,7 +74,12 @@ function ShoppingList() {
       />
       <ul className="Items">
         {itemsToDisplay.map((item) => (
-          <Item key={item.id} item={item} onUpdateItem={handleUpdateItem} onDeleteItem={handleDeleteItem} />
+          <Item
+            key={item.id}
+            item={item}
+            onUpdateItem={handleUpdateItem}
+            onDeleteItem={handleDeleteItem}
+          />
         ))}
       </ul>
     </div>

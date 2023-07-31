@@ -7,12 +7,14 @@ function ItemForm({ onAddItem }) {
   function handleSubmit(e) {
     e.preventDefault();
 
+    const newItem = { name, category, isInCart: false };
+
     fetch("/api/items", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, category }),
+      body: JSON.stringify(newItem),
     })
       .then((res) => res.json())
       .then((newItem) => {
@@ -26,7 +28,11 @@ function ItemForm({ onAddItem }) {
     <form className="NewItem" onSubmit={handleSubmit}>
       <label>
         Name
-        <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </label>
       <label>
         Category
@@ -36,7 +42,7 @@ function ItemForm({ onAddItem }) {
           <option value="Dessert">Dessert</option>
         </select>
       </label>
-      <button type="submit">Add Item</button> 
+      <button type="submit">Add Item</button>
     </form>
   );
 }
